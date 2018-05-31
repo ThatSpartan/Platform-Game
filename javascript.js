@@ -3,6 +3,8 @@ canvas.width = 600;
 canvas.height = 300;
 document.body.appendChild(canvas);
 
+const fps = 30;
+
 var context = canvas.getContext('2d');
 
 let controller = {
@@ -64,6 +66,7 @@ function fix_collision(player, box) {
 
             player.jumping = false;
             player.y = box.top - player.height;
+            player.old_y = player.y;
             player.y_velocity = 0;
 
         }
@@ -105,7 +108,7 @@ let player = {
     get center_x() { return this.x + this.width / 2; },
     get center_y() { return this.y + this.height / 2; },
 
-    get bottom() { return this.y + this.height; },
+    get bottom() { return this.old_y + this.height; },
     get left() { return this.x; },
     get right() { return this.x + this.width; },
     get top() { return this.y; },
@@ -134,7 +137,8 @@ class box {
 
 }
 
-boxes.push(new box(60, 20, 200, 300 - 20));
+boxes.push(new box(60, 20, 200, 300-20));
+boxes.push(new box(100, 15, 400, 300-15));
 
 function main_loop() {
 
@@ -197,9 +201,13 @@ function main_loop() {
     if (collision(player, boxes[0])) {
         fix_collision(player, boxes[0]);
     }
+    if (collision(player, boxes[1])) {
+        fix_collision(player, boxes[1]);
+    }
 
     context.fillStyle = '#8f7bcd';
     context.fillRect(boxes[0].x, boxes[0].y, boxes[0].width, boxes[0].height);
+    context.fillRect(boxes[1].x, boxes[1].y, boxes[1].width, boxes[1].height);
 
     context.fillStyle = 'rgba(255, 220, 120, 0.4)';
     context.fillRect(0, 0, 600, 300);
@@ -215,11 +223,11 @@ function main_loop() {
     
     document.getElementById('box_x_width').innerHTML = 'box x + width : ' + (box_x + box_width);
 
-    window.requestAnimationFrame(main_loop);
+    setTimeout(() => {
+        window.requestAnimationFrame(main_loop);
+    }, 1000 / fps);
 
 }
-
-
 
 window.addEventListener('keydown', controller.KeyPressed);
 window.addEventListener('keyup', controller.KeyPressed);
