@@ -3,7 +3,7 @@ canvas.width = 600;
 canvas.height = 300;
 document.body.appendChild(canvas);
 
-const fps = 5;
+const fps = 20;
 
 var context = canvas.getContext('2d');
 
@@ -55,7 +55,7 @@ function fix_collision(player, box) {
     let vector_y = player.center_y - box.center_y;
     let vector_old_y = player.center_old_y - box.center_old_y;
 
-    if (vector_y * vector_y > vector_x * vector_x) {
+    if (vector_old_y * vector_old_y > vector_x * vector_x) {
 
         if (vector_y > 0) {
 
@@ -149,6 +149,8 @@ function main_loop() {
 	if (controller.up && !player.jumping) { player.y_velocity -= 20; player.jumping = true; }
     if (controller.right) { player.x_velocity += 0.5; }
 
+    player.old_y = player.y;
+
     player.x += player.x_velocity;
     player.x_velocity *= 0.9;
 
@@ -162,7 +164,7 @@ function main_loop() {
     if (player.y > 300 - 30) {
 
         player.jumping = false;
-        player.old_y = player.y = 300 - 30;
+        player.y = 300 - 30;
         player.y_velocity = 0;
 
     }
@@ -177,26 +179,6 @@ function main_loop() {
     const box_y = boxes[0].y;
     const box_width = boxes[0].width;
     const player_size = 30;
-
-    // box
-    // if (player.y+30 > box_y && player.old_y+30 <= box_y && player.x > box_x && player.x+30 < box_x+box_width)
-    // {
-    //     player.jumping = false;
-    //     player.y_velocity = 0;
-    //     player.old_y = player.y = box_y - 30 - 0.01;
-    // }
-
-    // box tests
-    // if (player_x+player_size > box_x && player_y+player_size > box_y)
-    // {
-    //     player.x = box_x - player_size - 0.001;
-    //     player.x_velocity = 0;
-    // }
-    // if (player_y+player_size > box_y && player_x+player_size > box_x)
-    // {
-    //     player.y = box_y - player_size - 0.001;
-    //     player.y_velocity = 0;
-    // }
 
     // new box tests
     if (collision(player, boxes[0])) {
