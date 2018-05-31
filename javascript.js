@@ -3,7 +3,7 @@ canvas.width = 600;
 canvas.height = 300;
 document.body.appendChild(canvas);
 
-const fps = 30;
+const fps = 5;
 
 var context = canvas.getContext('2d');
 
@@ -53,6 +53,7 @@ function fix_collision(player, box) {
     
     let vector_x = player.center_x - box.center_x;
     let vector_y = player.center_y - box.center_y;
+    let vector_old_y = player.center_old_y - box.center_old_y;
 
     if (vector_y * vector_y > vector_x * vector_x) {
 
@@ -107,6 +108,8 @@ let player = {
 
     get center_x() { return this.x + this.width / 2; },
     get center_y() { return this.y + this.height / 2; },
+    
+    get center_old_y() { return this.old_y + this.height / 2; },
 
     get bottom() { return this.old_y + this.height; },
     get left() { return this.x; },
@@ -158,10 +161,8 @@ function main_loop() {
     // bottom of canvas
     if (player.y > 300 - 30) {
 
-        player.old_y = player.y;
-
         player.jumping = false;
-        player.y = 300 - 30;
+        player.old_y = player.y = 300 - 30;
         player.y_velocity = 0;
 
     }
@@ -217,6 +218,9 @@ function main_loop() {
 
     document.getElementById('player_x').innerHTML = 'player x : ' + player.x;
     document.getElementById('player_y').innerHTML = 'player y : ' + player.y;
+
+    document.getElementById('player_old_x').innerHTML = 'player old x : ' + player.old_x;
+    document.getElementById('player_old_y').innerHTML = 'player old y : ' + player.old_y;
 
     document.getElementById('box_x').innerHTML = 'box x : ' + box_x;
     document.getElementById('box_y').innerHTML = 'box y : ' + box_y;
